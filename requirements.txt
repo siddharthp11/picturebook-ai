@@ -26,7 +26,7 @@ numpy==1.26.2
 openai==1.3.3
 packaging==23.2
 pandas==2.1.3
-picturebook-ai-selector==0.0.1
+picturebook-ai-selector-3==0.0.1
 Pillow==10.1.0
 protobuf==4.25.1
 pyarrow==14.0.1

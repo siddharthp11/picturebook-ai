@@ -5,27 +5,39 @@ from openai import OpenAI
 
 st.title('PictureBook.ai')
 
-if 'api_key' not in st.session_state: 
+if 'api_key' not in st.session_state or not st.session_state['api_key']: 
     api_key = st.text_input('Please enter your OpenAI API key!', type='password', )
     
     def submit_key(key):
         if key: st.session_state['api_key'] = key
     
+    
     st.button('Enter', on_click=submit_key, args = (api_key, ), type='primary')
+
     
 else:
     if 'text' not in st.session_state or not st.session_state['text']:
-        text = st.text_area('Enter your text!', height=400)
+        
+        
+        
+        st.subheader('What text do you want to illustrate?')
+        text = st.text_area('Enter your text!', height=300, label_visibility='collapsed', placeholder="You'll be able to generate pictures for different parts of your input." )
+        
         def text_recieved():   
             if text: 
                 st.session_state['images'] = {} 
                 st.session_state.text = text 
 
-        submit_button = st.button(label='Submit', on_click= text_recieved)
+        def reset_key():
+            st.session_state['api_key'] = ''
+        
+        st.button(label='Submit', on_click= text_recieved, type='primary')
+        st.button(label="Back", on_click= reset_key)
+        
 
     elif st.session_state['text']: 
         
-        st.subheader('Select parts of your text!')
+        st.subheader('Select portions of your text.')
         annotations = textselect_component(st.session_state.text)
         
         st.subheader('Generate Images Here!')
@@ -58,18 +70,9 @@ else:
                         )
                     image_url = response.data[0].url
                     st.session_state['images'][widget_id] = image_url
-                except openai.APIError as e:
+                except Exception as e:
                     #Handle API error here, e.g. retry or log
-                    print(f"OpenAI API returned an API Error: {e}")
-                    pass
-                except openai.APIConnectionError as e:
-                    #Handle connection error here
-                    print(f"Failed to connect to OpenAI API: {e}")
-                    pass
-                except openai.RateLimitError as e:
-                    #Handle rate limit error (we recommend using exponential backoff)
-                    print(f"OpenAI API request exceeded rate limit: {e}")
-                    pass
+                    st.error(f"API error - check your API key!")
             
                 
             annotations = st.session_state['annotations']
