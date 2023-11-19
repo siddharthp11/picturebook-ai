@@ -44,6 +44,7 @@ rich==13.3.5
 six==1.16.0
 smmap==5.0.0
 sniffio==1.3.0
+-e git+ssh://git@github.com/siddharthp11/picturebook-ai.git@6e12b690934f4d31fa43742e126e36fb4f32d266#egg=st_text_annotator
 streamlit==1.21.0
 toml==0.10.2
 toolz==0.12.0
