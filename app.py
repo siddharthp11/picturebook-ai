@@ -57,7 +57,6 @@ else:
         st.subheader('Select portions of your text.')
         annotations = textselect_component(st.session_state.text)
         
-
         
         st.subheader('Generate Images Here!')
         gptcol, settingscol  = st.columns(2)
