@@ -18,15 +18,31 @@ if 'api_key' not in st.session_state or not st.session_state['api_key']:
 else:
     if 'text' not in st.session_state or not st.session_state['text']:
         
-        
-        
+    
         st.subheader('What text do you want to illustrate?')
         text = st.text_area('Enter your text!', height=300, label_visibility='collapsed', placeholder="You'll be able to generate pictures for different parts of your input." )
-        
+        pdf = st.file_uploader('Upload a pdf file!')
+
         def text_recieved():   
             if text: 
                 st.session_state['images'] = {} 
                 st.session_state.text = text 
+
+                def style(text):
+                    client = OpenAI(api_key=st.session_state['api_key'])
+                    response = client.completions.create(
+                        model="gpt-3.5-turbo-instruct",
+                        prompt=f"For the following excerpt of text, generate a style description for an image to be generated from this text. Your response will be provided to a text to DALL-E, along with a selection from the text. Your response should ensure that all images from DALL-E have a common theme and style. Your style description could include a) description of the scene, b) colors, c) story theme's, d) any other information that DALL-E could use.  \n\n{text}\n\nProvide only the style, no more:",
+                        temperature=1.00,
+                        max_tokens=200,
+                        top_p=1,
+                        frequency_penalty=0,
+                        presence_penalty=0
+                        )
+                    
+                    return response.choices[0].text
+                st.session_state['style_config'] = style(text)
+                
 
         def reset_key():
             st.session_state['api_key'] = ''
@@ -36,25 +52,32 @@ else:
         
 
     elif st.session_state['text']: 
+
         
         st.subheader('Select portions of your text.')
         annotations = textselect_component(st.session_state.text)
         
+
+        
         st.subheader('Generate Images Here!')
-        imgcol, modelcol = st.columns(2)
-        image_display_setting = imgcol.selectbox(label='How would you like the images displayed?',options=('rows', 'columns'))
-        model = modelcol.selectbox(label='Which model do you want to use?',options=('dall-e-2', 'dall-e-3'))
+        gptcol, settingscol  = st.columns(2)
+        image_display_setting = settingscol.selectbox(label='How would you like the images displayed?',options=('rows', 'columns'))
+        model = settingscol.selectbox(label='Which model do you want to use?',options=('dall-e-2', 'dall-e-3'))
+
+        expanded = gptcol.expander("Here are GPT's thoughts on image styles for this text.", True)
+        expanded.text_area('x', value=st.session_state['style_config'], label_visibility='collapsed')
+
         st.session_state['annotations'] = annotations[0] if annotations else []
 
         def display_annotations():
-
+            style_config = st.session_state['style_config']
             def generate(prompt, widget_id):
                 try: 
                     client = OpenAI(api_key=st.session_state['api_key'])
                     if model =='dall-e-2':
 
                         response = client.images.generate(
-                            prompt=f"{prompt}",
+                            prompt=f"style instructions: {style_config}, scene:{prompt}",
                             model="dall-e-2",
                             n=1,
                             size="1024x1024"
@@ -62,7 +85,7 @@ else:
                         
                     elif model == 'dall-e-3':
                         response = client.images.generate(
-                            prompt=f"Generate an image inspired by the following excerpt: {prompt}",
+                            prompt=f"Using this style config, {style_config}, Generate an image inspired by the following scene: {prompt}",
                             model="dall-e-3",
                             quality= "standard",
                             n=1,
