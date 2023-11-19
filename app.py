@@ -1,4 +1,4 @@
-from st_text_annotator import StTextAnnotator
+from picturebook_ai_selector import textselect_component
 import streamlit as st
 import openai 
 from openai import OpenAI
@@ -15,7 +15,7 @@ if 'api_key' not in st.session_state:
     
 else:
     if 'text' not in st.session_state or not st.session_state['text']:
-        text = st.text_area('Enter your text!')
+        text = st.text_area('Enter your text!', height=400)
         def text_recieved():   
             if text: 
                 st.session_state['images'] = {} 
@@ -26,7 +26,7 @@ else:
     elif st.session_state['text']: 
         
         st.subheader('Select parts of your text!')
-        annotations = StTextAnnotator(st.session_state.text)
+        annotations = textselect_component(st.session_state.text)
         
         st.subheader('Generate Images Here!')
         imgcol, modelcol = st.columns(2)
@@ -45,12 +45,12 @@ else:
                             prompt=f"{prompt}",
                             model="dall-e-2",
                             n=1,
-                            size="256x256"
+                            size="1024x1024"
                         )
                         
                     elif model == 'dall-e-3':
                         response = client.images.generate(
-                            prompt=f"Draw some art inspired by the following excerpt: {prompt}",
+                            prompt=f"Generate an image inspired by the following excerpt: {prompt}",
                             model="dall-e-3",
                             quality= "standard",
                             n=1,
