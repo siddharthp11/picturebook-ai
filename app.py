@@ -11,14 +11,11 @@ if 'api_key' not in st.session_state or not st.session_state['api_key']:
     def submit_key(key):
         if key: st.session_state['api_key'] = key
     
-    
     st.button('Enter', on_click=submit_key, args = (api_key, ), type='primary')
 
     
 else:
     if 'text' not in st.session_state or not st.session_state['text']:
-        
-        
         
         st.subheader('What text do you want to illustrate?')
         text = st.text_area('Enter your text!', height=300, label_visibility='collapsed', placeholder="You'll be able to generate pictures for different parts of your input." )
