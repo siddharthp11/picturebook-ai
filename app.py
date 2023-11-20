@@ -64,7 +64,7 @@ else:
         model = settingscol.selectbox(label='Which model do you want to use?',options=('dall-e-2', 'dall-e-3'))
 
         expanded = gptcol.expander("Here are GPT's thoughts on image styles for this text.", True)
-        expanded.text_area('x', value=st.session_state['style_config'], label_visibility='collapsed')
+        st.session_state['style_config'] = expanded.text_area('x', value= str.strip(st.session_state['style_config']), label_visibility='collapsed')
 
         st.session_state['annotations'] = annotations[0] if annotations else []
 
@@ -111,19 +111,23 @@ else:
                     if idx in st.session_state['images'].keys():
                         img = st.session_state['images'][idx]
                         imgcol.image(img)
+                        imgcol.button('Re-Generate!', idx, on_click=generate, args=(label,idx),type='primary')
+
                     else: 
                         container = imgcol.container()
-                        container.button('Generate!', idx, on_click=generate, args=(label,idx),type='primary')
+                        container.button('Re-generate!', idx, on_click=generate, args=(label,idx),type='primary')
                 else: 
 
                     st.text_area('x', label, label_visibility="collapsed")
                     if idx in st.session_state['images'].keys():
                         img = st.session_state['images'][idx]
                         st.image(img)
+                        st.button('Re-generate!', idx, on_click=generate, args=(label,idx),type='primary')
+
                     else: 
                         container = st.container()
                         container.button('Generate!', idx, on_click=generate, args=(label,idx),type='primary')
-                
+
                 
                 
         if st.session_state['annotations']: 
