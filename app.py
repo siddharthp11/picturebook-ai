@@ -6,14 +6,28 @@ from openai import OpenAI
 st.title(':city_sunset: :bridge_at_night: PictureBook.ai :night_with_stars: :sunrise_over_mountains: ', )
 
 if 'api_key' not in st.session_state or not st.session_state['api_key']:
-    api_key = st.text_input(
-        'Please enter your OpenAI API key!', type='password', )
+    st.subheader('Introduction', divider='red')
+    inputcol, buttoncol = st.columns([4,1])
+    api_key = inputcol.text_input('x', type='password', placeholder='Enter your OpenAI API key.', label_visibility='collapsed')
 
     def submit_key(key):
         if key:
             st.session_state['api_key'] = key
 
-    st.button('Enter', on_click=submit_key, args=(api_key, ), type='primary')
+    buttoncol.button('Enter', on_click=submit_key, args=(api_key, ), type='primary')
+    
+    custom_css = """<style>.big-font {font-size: 18px !important; margin-top:-5px;}</style>"""
+    st.markdown(custom_css, unsafe_allow_html=True)
+    info_str = """<p class="big-font">You know the feeling of reading a book and really wanting to visualize its landscapes, characters, and atmosphere? 
+    <span style='color: turquoise;'>PictureBook.ai</span> is inspired by that feeling, and allows users to generate images from their curations of a text.</p>
+    <p class="big-font">Just like an illustrated book, PictureBook.ai ensures that generated images are consistent in style, 
+    enabling a user to transform any unillustrated text into a PictureBook!</p>
+    <p class="big-font">To start, enter your <span style='color: orange;'>OpenAI API key</span>. If you don't have one, you can create one on their website.</p>
+
+"""
+    st.markdown(f'<p class="big-font">{info_str}</p>', unsafe_allow_html=True)
+
+    
 
 
 else:
