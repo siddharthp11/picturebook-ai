@@ -22,7 +22,7 @@ else:
         st.subheader('What text do you want to illustrate?', divider="blue")
         text = st.text_area('Enter your text!', height=300, label_visibility='collapsed',
                             placeholder="You'll be able to generate pictures for different parts of your input.")
-        pdf = st.file_uploader('Upload a pdf file!')
+        # pdf = st.file_uploader('Upload a pdf file!')
 
         def text_recieved():
             if text:
@@ -64,7 +64,7 @@ else:
             label='Which model do you want to use?', options=('dall-e-2', 'dall-e-3'))
 
         expanded = gptcol.expander(
-            "An AI agent has provided the following prompt, which will influence the style of the images.", True)
+            "GPT-3 has provided the following style, which will influence the style of the images.", True)
         st.session_state['style_config'] = expanded.text_area('x', value=str.strip(
             st.session_state['style_config']), label_visibility='collapsed')
 
