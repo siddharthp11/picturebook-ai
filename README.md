@@ -9,3 +9,4 @@
 * A custom ui component was built to support text selection, which is not natively supported by streamlit. It will be installed by default if you `pip install -r requirements.txt``.
 * Else, you can install using pip `pip install picturebook-ai-selector-3`.
 * For development, `streamlit run app.py`
+* Test deployed at https://picturebook-ai-c6ejeietkztcmrxzbcupdu.streamlit.app/
